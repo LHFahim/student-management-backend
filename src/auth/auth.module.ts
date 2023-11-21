@@ -7,6 +7,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
 
 @Module({
@@ -17,12 +18,12 @@ import { LocalStrategy } from './strategy/local.strategy';
       useFactory: (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
         global: true,
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '300s' },
       }),
       inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, UserService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, UserService],
 })
 export class AuthModule {}

@@ -15,23 +15,18 @@ export class AuthService extends SerializeService<UserEntity> {
   }
 
   async login(body: LoginDto) {
-    console.log('hi', body);
-
     const payload = { sub: '1', username: 'fahim' };
     const token = await this.jwtService.signAsync(payload);
-    console.log(
-      '🚀 ~ file: auth.service.ts:25 ~ AuthService ~ login ~ token:',
-      token,
-    );
+
     return {
       access_token: token,
     };
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = this.userService.findOne(username);
-    console.log('🚀 ~ validateUser', user);
-    if (user && user.password === pass) {
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = this.userService.findOne(email);
+
+    if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
     }

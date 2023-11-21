@@ -15,7 +15,8 @@ import { APIVersions } from 'src/common/enum/api-versions.enum';
 import { ControllersEnum } from 'src/common/enum/controllers.enum';
 import { AuthService } from './auth.service';
 import { CreateAuthDto, LoginDto, UpdateAuthDto } from './dto/auth.dto';
-import { ClientAuthGuard } from './guards/client-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('Authentication')
 @Serialize()
@@ -23,7 +24,8 @@ import { ClientAuthGuard } from './guards/client-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(ClientAuthGuard)
+  @UseGuards(LocalAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('login')
   login(@Body() body: LoginDto) {
     return this.authService.login(body);
