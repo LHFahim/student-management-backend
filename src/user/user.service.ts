@@ -15,6 +15,19 @@ export class UserService extends SerializeService<UserEntity> {
     super(UserEntity);
   }
 
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'string',
+      password: 'string',
+    },
+    {
+      userId: 2,
+      username: 'maria',
+      password: 'guess',
+    },
+  ];
+
   async create(createUserDto: CreateUserDto) {
     const doc = await this.userModel.create(createUserDto);
 
@@ -27,8 +40,8 @@ export class UserService extends SerializeService<UserEntity> {
     return this.toJSONs(docs, CreateUserDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(username: string) {
+    return this.users.find((user) => user.username === username);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -36,6 +49,6 @@ export class UserService extends SerializeService<UserEntity> {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return `This action remove a #${id} user`;
   }
 }

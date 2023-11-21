@@ -4,6 +4,7 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({ isGlobal: true, validate }),
     ConfigModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [AppService, ConfigService],
