@@ -1,27 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
+import { SerializeService } from 'libraries/serializer/serialize';
 import { InjectModel } from 'nestjs-typegoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
-export class UserService {
+export class UserService extends SerializeService<UserEntity> {
   constructor(
     @InjectModel(UserEntity)
     private readonly userModel: ReturnModelType<typeof UserEntity>,
   ) {
-    // super(UserEntity);
+    super(UserEntity);
   }
 
   async create(createUserDto: CreateUserDto) {
     const doc = await this.userModel.create(createUserDto);
 
-    return doc;
+    this.toJSON(doc, CreateUserDto);
   }
 
   async findAll() {
-    return await this.userModel.find();
+    const docs = await this.userModel.find();
+
+    return this.toJSONs(docs, CreateUserDto);
   }
 
   findOne(id: number) {

@@ -7,11 +7,17 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Serialize } from 'libraries/serializer/serializer.decorator';
+import { APIVersions } from 'src/common/enum/api-versions.enum';
+import { ControllersEnum } from 'src/common/enum/controllers.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
-@Controller('user')
+@ApiTags('Users')
+@Serialize()
+@Controller({ path: ControllersEnum.Users, version: APIVersions.V1 })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

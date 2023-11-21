@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { UserModule } from './user/user.module';
@@ -19,7 +18,7 @@ import { UserModule } from './user/user.module';
     ConfigModule,
     UserModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService, ConfigService],
 })
 export class AppModule {}
