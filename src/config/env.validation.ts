@@ -3,8 +3,12 @@ import { IsDefined, IsString, validateSync } from 'class-validator';
 
 class EnvironmentVariables {
   @IsDefined()
-  @IsString({ message: 'Invalid SECRET_KEY' })
-  SECRET_KEY: string;
+  @IsString({ message: 'INVALID PORT' })
+  PORT: string;
+
+  @IsDefined()
+  @IsString({ message: 'INVALID MONGODB URL' })
+  MONGODB_URL: string;
 }
 
 export const validate = (config: Record<string, unknown>) => {
