@@ -1,4 +1,5 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { UserEntity } from 'src/user/entities/user.entity';
 
@@ -24,4 +25,32 @@ export class RegisterByEmailDto extends PickType(UserEntity, [
   @IsNotEmpty()
   @MinLength(8)
   password: string;
+}
+
+export class UserProfileDto extends OmitType(UserEntity, ['password']) {}
+export class AuthResponseDto {
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({})
+  access_token: string;
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({})
+  refresh_token: string;
+
+  @Expose()
+  @IsNotEmpty()
+  @Type(() => UserProfileDto)
+  @ApiProperty({})
+  user: UserProfileDto;
+}
+
+export class RefreshTokenDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ required: true })
+  refresh_token: string;
 }

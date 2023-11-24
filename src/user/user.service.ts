@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { SerializeService } from 'libraries/serializer/serialize';
 import { InjectModel } from 'nestjs-typegoose';
-import { RegisterByEmailDto } from 'src/auth/dto/auth.dto';
+import { RegisterByEmailDto, UserProfileDto } from 'src/auth/dto/auth.dto';
 import { AuthProvider, PanelType } from 'src/common/enum/auth.enum';
 import { UpdateUserDto, UserDto } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -15,19 +15,6 @@ export class UserService extends SerializeService<UserEntity> {
   ) {
     super(UserEntity);
   }
-
-  // private readonly users = [
-  //   {
-  //     userId: 1,
-  //     username: 'string',
-  //     password: 'string',
-  //   },
-  //   {
-  //     userId: 2,
-  //     username: 'maria',
-  //     password: 'guess',
-  //   },
-  // ];
 
   async findUserByEmail(email: string) {
     return await this.userModel.findOne({ email });
@@ -58,7 +45,16 @@ export class UserService extends SerializeService<UserEntity> {
     return this.toJSONs(docs, UserDto);
   }
 
-  findOne(username: string) {}
+  async findUserById(_id: string) {
+    return await this.userModel.findById(_id);
+  }
+
+  async findOne(_id: string) {
+    const user = await this.userModel.findOne({ _id });
+    if (!user) throw new NotFoundException('User not found');
+
+    return this.toJSON(user, UserProfileDto);
+  }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;

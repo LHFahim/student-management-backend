@@ -9,6 +9,18 @@ class EnvironmentVariables {
   @IsDefined()
   @IsString({ message: 'INVALID MONGODB URL' })
   MONGODB_URL: string;
+
+  @IsDefined()
+  @IsString({ message: 'INVALID JWT' })
+  JWT_SECRET: string;
+
+  @IsDefined()
+  @IsString()
+  JWT_ACCESS_TOKEN_EXPIRES_IN: string;
+
+  @IsDefined()
+  @IsString()
+  JWT_REFRESH_TOKEN_EXPIRES_IN: string;
 }
 
 export const validate = (config: Record<string, unknown>) => {
