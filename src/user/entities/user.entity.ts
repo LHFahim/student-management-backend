@@ -30,11 +30,11 @@ export class UserEntity extends DocumentWithTimeStamps {
   @Prop({ required: true, trim: true })
   lastName: string;
 
-  @ApiProperty({ required: true })
   @Expose()
   @IsEmail()
   @IsNotEmpty()
   @Prop({ required: true, trim: true })
+  @ApiProperty({ required: true, default: 'fahim@gmail.com' })
   email: string;
 
   @Exclude()

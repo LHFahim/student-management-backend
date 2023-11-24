@@ -33,9 +33,7 @@ export class AuthService extends SerializeService<UserEntity> {
     const user = await this.userService.findUserByEmail(email);
 
     if (await bcrypt.compare(password, user.password)) {
-      const { password, ...result } = user;
-
-      return result;
+      return { email: user.email, id: user.id };
     }
     return null;
   }

@@ -8,7 +8,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Serialize } from 'libraries/serializer/serializer.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { APIVersions } from 'src/common/enum/api-versions.enum';
@@ -18,6 +18,7 @@ import { UserService } from './user.service';
 
 @ApiTags('Users')
 @Serialize()
+@ApiBearerAuth()
 @Controller({ path: ControllersEnum.Users, version: APIVersions.V1 })
 export class UserController {
   constructor(private readonly userService: UserService) {}

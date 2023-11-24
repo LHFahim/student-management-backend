@@ -2,13 +2,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UserService } from 'src/user/user.service';
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly authService: AuthService,
+    private readonly userService: UserService,
     private readonly configService: ConfigService,
   ) {
     super({
@@ -19,26 +21,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log(
-      '🚀 ~ file: jwt.strategy.ts:22 ~ JwtStrategy ~ validate ~ payload:',
-      payload,
-    );
-    // const user = await this.authService.validateUser(
-    //   payload.username,
-    //   payload.password,
-    // );
-    // console.log(
-    //   '🚀 ~ file: jwt.strategy.ts:27 ~ JwtStrategy ~ validate ~ user:',
-    //   user,
-    // );
-    // if (!user) {
-    //   throw new UnauthorizedException('Unauthorized user');
-    // }
+    const user = await this.userService.findUserByEmail(payload.email);
+    if (!user) {
+      throw new UnauthorizedException('Unauthorized user');
+    }
 
-    // user.lastActive = new Date();
-    // await user.save();
+    user.lastLogin = new Date();
+    await user.save();
 
-    // return user;
     return {
       id: payload.id,
       email: payload.email,

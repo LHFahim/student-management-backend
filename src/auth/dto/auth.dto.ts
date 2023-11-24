@@ -9,7 +9,7 @@ export class UpdateAuthDto extends PartialType(CreateAuthDto) {}
 export class LoginDto extends PickType(UserEntity, ['email']) {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: true, default: 'stringst' })
   password: string;
 }
 
