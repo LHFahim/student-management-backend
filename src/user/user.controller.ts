@@ -5,17 +5,15 @@ import {
   Get,
   Param,
   Patch,
-  Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Serialize } from 'libraries/serializer/serializer.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 import { APIVersions } from 'src/common/enum/api-versions.enum';
 import { ControllersEnum } from 'src/common/enum/controllers.enum';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
 @ApiTags('Users')
@@ -24,14 +22,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
+  findAll(@Request() request: any) {
     return this.userService.findAll();
   }
 

@@ -60,29 +60,13 @@ export class UserEntity extends DocumentWithTimeStamps {
   @Expose()
   isEmailVerified: boolean;
 
-  @ApiProperty({ required: false })
-  @Expose()
-  @IsString()
-  @IsNotEmpty()
-  @Prop({ required: false, type: String, trim: true })
-  shortBio: string;
-
   @Expose()
   @IsString()
   @IsNotEmpty()
   @IsPhoneNumber()
   @ApiProperty({ required: false })
   @Prop({ required: false, type: String, trim: true })
-  phoneNumber: string;
-
-  @Expose()
-  @IsString()
-  @IsOptional()
-  @ApiProperty({ required: false, default: '' })
-  @Prop({ required: false, type: String, trim: true })
-  @ValidateIf((object, value) => value !== '')
-  @IsEmail({}, { message: 'Invalid email address' })
-  secondaryEmail: string;
+  phone: string;
 
   @Expose()
   @IsEnum(PanelType)

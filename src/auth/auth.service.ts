@@ -1,9 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { SerializeService } from 'libraries/serializer/serialize';
+import { UserDto } from 'src/user/dto/user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-import { CreateAuthDto, LoginDto, UpdateAuthDto } from './dto/auth.dto';
+import { LoginDto, RegisterByEmailDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService extends SerializeService<UserEntity> {
@@ -14,8 +20,8 @@ export class AuthService extends SerializeService<UserEntity> {
     super(UserEntity);
   }
 
-  async login(body: LoginDto) {
-    const payload = { sub: '1', username: 'fahim' };
+  async login(body: LoginDto, request: any) {
+    const payload = { id: request.user.id, email: request.user.email };
     const token = await this.jwtService.signAsync(payload);
 
     return {
@@ -24,32 +30,32 @@ export class AuthService extends SerializeService<UserEntity> {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = this.userService.findOne(email);
+    const user = await this.userService.findUserByEmail(email);
 
-    if (user && user.password === password) {
+    if (await bcrypt.compare(password, user.password)) {
       const { password, ...result } = user;
+
       return result;
     }
     return null;
   }
 
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  async registerByEmail(body: RegisterByEmailDto): Promise<UserDto> {
+    const userExists = await this.userService.findUserByEmail(body.email);
+    if (userExists)
+      throw new BadRequestException(`User ${body.email} already exists`);
+
+    body.password = await this.getHashedPassword(body.password);
+
+    const user = await this.userService.createUser({
+      ...body,
+    });
+
+    return this.toJSON(user, UserDto);
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  public async getHashedPassword(password: string) {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
   }
 }

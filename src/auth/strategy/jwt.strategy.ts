@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
@@ -15,22 +15,33 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
-    } as StrategyOptions);
+    });
   }
 
   async validate(payload: any) {
-    console.log('inside jwt strategy', payload);
-    const user = await this.authService.validateUser(
-      payload.username,
-      payload.password,
+    console.log(
+      '🚀 ~ file: jwt.strategy.ts:22 ~ JwtStrategy ~ validate ~ payload:',
+      payload,
     );
-    if (!user) {
-      throw new UnauthorizedException('Unauthorized user');
-    }
+    // const user = await this.authService.validateUser(
+    //   payload.username,
+    //   payload.password,
+    // );
+    // console.log(
+    //   '🚀 ~ file: jwt.strategy.ts:27 ~ JwtStrategy ~ validate ~ user:',
+    //   user,
+    // );
+    // if (!user) {
+    //   throw new UnauthorizedException('Unauthorized user');
+    // }
 
-    user.lastActive = new Date();
-    await user.save();
+    // user.lastActive = new Date();
+    // await user.save();
 
-    return user;
+    // return user;
+    return {
+      id: payload.id,
+      email: payload.email,
+    };
   }
 }
